@@ -1,0 +1,96 @@
+package dao;
+
+import empCity.City;
+import empCity.Employee;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EmployeeDAOImpl implements EmployeeDAO {
+    private Connection connection;
+
+    public EmployeeDAOImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+
+    @Override
+    public void create(Employee employee) {
+        try (PreparedStatement statement = connection.prepareStatement(Queries.INSERT.query)) {
+            statement.setString(1, employee.getFirst_name());
+            statement.setString(2, employee.getLast_name());
+            statement.setInt(3, employee.getAge());
+            statement.setString(4, employee.getGender());
+            statement.setInt(5, employee.getCity_id().getCity_id());
+
+            statement.executeQuery();
+
+        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public Employee getById(int id) throws SQLException {
+
+        Employee employee = new Employee();
+
+        try (PreparedStatement statement = connection.prepareStatement(Queries.GET.query)) {
+
+            statement.setInt(1, 1);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                employee.setId(Integer.parseInt(resultSet.getString("id")));
+                employee.setFirst_name(resultSet.getString("first_name"));
+                employee.setLast_name(resultSet.getString("last_name"));
+                employee.setAge(Integer.parseInt(resultSet.getString("last_name")));
+                employee.setGender(resultSet.getString("gender"));
+                employee.setCity_id(new City((resultSet.getInt("city_id")),
+                    resultSet.getString("city_name")));
+            }
+        }
+        return employee;
+    }
+
+
+    @Override
+    public List<Employee> getAll() throws SQLException {
+        List<Employee> employees = new ArrayList<>();
+        try(PreparedStatement statement = connection.prepareStatement(Queries.GET_ALL.query)) {
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = (Integer.parseInt(resultSet.getString("id")));
+                String first_name = (resultSet.getString("first_name"));
+                String last_name = (resultSet.getString("last_name"));
+                int age = (Integer.parseInt(resultSet.getString("age")));
+                String gender = (resultSet.getString("gender"));
+                City city_id = new City(resultSet.getInt("city_id"),
+                    resultSet.getString("city_name"));
+
+                employees.add(new Employee(id, first_name, last_name, gender, age, city_id));
+            }
+        }
+        return employees;
+    }
+
+    @Override
+    public void updateById(int id, int city_id) throws SQLException {
+        try(PreparedStatement statement = connection.prepareStatement(Queries.UPDATE.query)) {
+            statement.setInt(1, id);
+            statement.setInt(2, city_id);
+
+            statement.execute();
+        }
+    }
+
+    @Override
+    public void deleteById(int id) throws SQLException {
+        try(PreparedStatement statement = connection.prepareStatement(Queries.DELETE.query)) {
+            statement.setInt(1, id);
+            statement.execute();
+        }
+
+    }
+}
