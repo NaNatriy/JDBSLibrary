@@ -1,16 +1,27 @@
 package empCity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "employee")
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "first_name")
     private String first_name;
+    @Column(name = "last_name")
     private String last_name;
+    @Column(name = "gender")
     private String gender;
+    @Column(name = "age")
     private int age;
-    private City city_id;
+    @Column(name = "city_id")
+    private int city_id;
 
-    public Employee(int id, String first_name, String last_name, String gender, int age, City city_id) {
-        this.id = id;
+    public Employee(String first_name, String last_name, String gender, int age, int city_id) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.gender = gender;
@@ -49,7 +60,7 @@ public class Employee {
         return age;
     }
 
-    public City getCity_id() {
+    public int getCity_id() {
         return city_id;
     }
 
@@ -73,7 +84,7 @@ public class Employee {
         this.age = age;
     }
 
-    public void setCity_id(City city_id) {
+    public void setCity_id(int city_id) {
         this.city_id = city_id;
     }
 }
