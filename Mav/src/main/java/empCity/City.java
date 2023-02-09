@@ -1,12 +1,27 @@
 package empCity;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "city")
 public class City {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city_id")
     private int city_id;
+    @Column(name = "city_name")
     private String city_name;
 
-    public City(int city_id, String city_name) {
-        this.city_id = city_id;
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    private List<Employee> employeeList;
+
+    public City(String city_name) {
         this.city_name = city_name;
+    }
+
+    public City() {
+
     }
 
     @Override
@@ -15,6 +30,14 @@ public class City {
                 "city_id=" + city_id +
                 ", city_name='" + city_name + '\'' +
                 '}';
+    }
+
+    public List<Employee> getEmployees() {
+        return employeeList;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employeeList = employees;
     }
 
     public int getCity_id() {
